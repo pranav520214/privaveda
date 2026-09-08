@@ -71,4 +71,7 @@ def health():
     return {"status": "ok", "prototype": True}
 
 
+from app.api.privaveda_routes import router as privaveda_router
+
 app.include_router(router)
+app.include_router(privaveda_router)
