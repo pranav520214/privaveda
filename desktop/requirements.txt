@@ -4,3 +4,4 @@ ijson==3.5.1
 pytest-qt==4.5.0
 pytest-cov==7.0.0
 pywinauto==0.6.9
+Pillow==12.3.0

@@ -3,6 +3,7 @@ import json
 import re
 import sqlite3
 import zlib
+from contextlib import contextmanager
 from pathlib import Path
 from urllib.parse import quote
 
@@ -34,10 +35,15 @@ class ReferenceCatalog:
     def __init__(self, path):
         self.path = Path(path)
 
+    @contextmanager
     def connect(self):
         conn = sqlite3.connect(self.path, timeout=60)
         conn.row_factory = sqlite3.Row
-        return conn
+        try:
+            with conn:
+                yield conn
+        finally:
+            conn.close()
 
     def initialize(self):
         self.path.parent.mkdir(parents=True, exist_ok=True)
@@ -80,7 +86,13 @@ class ReferenceCatalog:
             return []
         expression = ' AND '.join('"' + w + '"' for w in words)
         with self.connect() as conn:
-            return [dict(r) for r in conn.execute('SELECT id,title,generic_name FROM labels_fts WHERE labels_fts MATCH ? ORDER BY bm25(labels_fts,0,8,5,1) LIMIT ?', (expression, min(max(limit, 1), 100)))]
+            rows = [dict(r) for r in conn.execute('SELECT id,title,generic_name FROM labels_fts WHERE labels_fts MATCH ? ORDER BY bm25(labels_fts,0,8,5,1) LIMIT ?', (expression, min(max(limit, 1), 100)))]
+            for row in rows:
+                label = json.loads(zlib.decompress(conn.execute('SELECT payload FROM labels WHERE id=?',(row['id'],)).fetchone()[0]))
+                row.update(effective_time=label['effective_time'], manufacturer=label['manufacturer'],
+                           clinical_sections=sum(k in label['sections'] for k in ('indications_and_usage','contraindications','boxed_warning','warnings','warnings_and_cautions','drug_interactions')))
+            # Keep lexical ranking within completeness groups; prefer usable labels to packaging-only records.
+            return sorted(rows,key=lambda r:-r['clinical_sections'])
 
     def get(self, id):
         with self.connect() as conn:

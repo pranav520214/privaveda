@@ -5,11 +5,13 @@ from pathlib import Path
 import sys
 import pytest
 
+os.environ.setdefault('QT_QPA_PLATFORM','offscreen')
+
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'desktop'))
 sys.path.insert(0,str(ROOT/'backend'))
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='session',autouse=True)
 def workspace(tmp_path_factory):
     folder = tmp_path_factory.mktemp('native-profile')
     for name in ('APPDATA','LOCALAPPDATA','TEMP','TMP','PMAI_DATA_DIR'):
@@ -28,14 +30,19 @@ def workspace(tmp_path_factory):
     return assets,data
 
 @pytest.fixture
-def window(qtbot,workspace):
-    from main import Window
+def window(qtbot,workspace,monkeypatch):
+    from main import Window, ensure_fonts
+    from PySide6.QtWidgets import QMessageBox
+    ensure_fonts()
+    messages = []
+    monkeypatch.setattr(QMessageBox,'warning',lambda parent,title,text:messages.append(text))
     w = Window(*workspace)
     qtbot.addWidget(w)
     w.show()
     yield w
     qtbot.waitUntil(lambda:w.job is None,timeout=30000)
     w.model.close()
+    assert not messages, messages
 
 def test_native_login_case_analysis_search_brief_save_and_pdf(qtbot,window,monkeypatch,tmp_path):
     w = window
@@ -160,6 +167,6 @@ def test_headless_pdf_contains_selectable_readable_text(tmp_path):
     import subprocess
     env = os.environ.copy()
     env['QT_QPA_PLATFORM'] = 'offscreen'
-    code = "from PySide6.QtWidgets import QApplication;from PySide6.QtPdf import QPdfDocument;from pathlib import Path;from main import write_pdf;a=QApplication([]);p=Path(__import__('sys').argv[1]);write_pdf('<h1>Readable clinical review</h1><p>Source evidence with clinician assessment.</p>',p);d=QPdfDocument();d.load(str(p));assert 'Readable clinical review' in d.getAllText(0).text()"
+    code = "from PySide6.QtWidgets import QApplication;from PySide6.QtPdf import QPdfDocument;from pathlib import Path;from main import write_pdf;a=QApplication([]);p=Path(__import__('sys').argv[1]);write_pdf('<p style=\"font-size:13px\">Readable clinical review</p>',p);d=QPdfDocument();d.load(str(p));assert 'Readable clinical review' in d.getAllText(0).text();assert d.getSelectionAtIndex(0,0,15).boundingRectangle().height() >= 7"
     result = subprocess.run([sys.executable,'-c',code,str(tmp_path/'readable.pdf')],cwd=ROOT/'desktop',env=env,capture_output=True,text=True,timeout=30)
     assert result.returncode == 0, result.stderr

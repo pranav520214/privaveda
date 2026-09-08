@@ -14,5 +14,6 @@ backend/demo-credentials.txt
 .assets/
 desktop/dist/
 desktop/build/
+desktop/*.spec
 .coverage*
 htmlcov/

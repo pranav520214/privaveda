@@ -1,0 +1,5 @@
+{
+  "model_id": "google/medgemma-4b-it",
+  "status": "UNLOADED_REQUIRES_HF_TOKEN",
+  "instructions": "Set HF_TOKEN and rerun download_medgemma.py"
+}

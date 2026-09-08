@@ -4,6 +4,8 @@ import json
 import os
 from pathlib import Path
 import sys
+import subprocess
+import shutil
 import time
 import urllib.request
 import zipfile
@@ -30,10 +32,9 @@ def download(url, path, expected=None):
     temp = path.with_suffix(path.suffix + '.part')
     for attempt in range(4):
         try:
-            request = urllib.request.Request(url, headers={'User-Agent': 'PersonalizedMedicineResearchDesktop/1.0'})
-            with urllib.request.urlopen(request, timeout=120) as response, temp.open('wb') as out:
-                while block := response.read(1024 * 1024):
-                    out.write(block)
+            subprocess.run(['curl.exe', '--fail', '--location', '--silent', '--show-error',
+                            '--connect-timeout', '30', '--max-time', '1800', '--retry', '2',
+                            '--output', str(temp), url], check=True, creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0))
             digest = sha256(temp)
             if expected and digest != expected:
                 raise ValueError('SHA-256 mismatch for ' + path.name)
@@ -47,7 +48,37 @@ def download(url, path, expected=None):
 
 def model():
     path = ASSETS / 'model' / 'medical-1.5b-q4.gguf'
-    digest = download(MODEL_URL, path, MODEL_HASH)
+    if not path.exists():
+        # Some CDN routes stall on whole-file transfers. Bounded ranges are resumable.
+        size, chunk_size = 986048096, 8 * 1024 * 1024
+        chunks = ASSETS / 'downloads' / 'model-chunks'
+        chunks.mkdir(parents=True, exist_ok=True)
+        def fetch_chunk(start):
+            end = min(start + chunk_size, size) - 1
+            chunk = chunks / str(start)
+            if chunk.exists() and chunk.stat().st_size == end-start+1:
+                return chunk
+            subprocess.run(['curl.exe','--fail','--location','--silent','--show-error','--max-time','180','--retry','3',
+                            '--range',f'{start}-{end}','--output',str(chunk),MODEL_URL+'?download=true'],check=True,
+                           creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0))
+            if chunk.stat().st_size != end-start+1:
+                raise ValueError('Model range length mismatch')
+            return chunk
+        with concurrent.futures.ThreadPoolExecutor(max_workers=6) as pool:
+            files = list(pool.map(fetch_chunk,range(0,size,chunk_size)))
+        path.parent.mkdir(parents=True, exist_ok=True)
+        temp = path.with_suffix('.verified-part')
+        with temp.open('wb') as out:
+            for chunk in files:
+                with chunk.open('rb') as source:
+                    while block := source.read(1024*1024):
+                        out.write(block)
+        if sha256(temp) != MODEL_HASH:
+            raise ValueError('Assembled model SHA-256 mismatch')
+        temp.replace(path)
+    digest = sha256(path)
+    if digest != MODEL_HASH:
+        raise ValueError('Model SHA-256 mismatch')
     manifest = {'name': 'NewSonnet triage Qwen2.5-1.5B', 'source_url': MODEL_URL,
                 'sha256': digest, 'parameter_count': gguf_parameter_count(path),
                 'status': 'EXPERIMENTAL_NOT_CLINICALLY_VALIDATED', 'license': 'Apache-2.0 publisher claim; training data rights not established'}
@@ -64,7 +95,8 @@ def model():
             if not target.is_relative_to(destination):
                 raise ValueError('Unsafe runtime archive path')
         z.extractall(destination)
-    binaries = {str(p.relative_to(destination)): sha256(p) for p in destination.rglob('*') if p.is_file()}
+    shutil.copyfile(archive, destination / 'verified-runtime.zip')
+    binaries = {str(p.relative_to(destination)): sha256(p) for p in destination.rglob('*') if p.is_file() and p.name not in ('manifest.json','verified-runtime.zip')}
     (destination / 'manifest.json').write_text(json.dumps({'url': RUNTIME_URL, 'archive_sha256': RUNTIME_HASH, 'files': binaries}, indent=2), encoding='utf-8')
     print('MODEL READY: ' + str(manifest['parameter_count']) + ' actual parameters', flush=True)
 
