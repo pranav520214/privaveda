@@ -62,3 +62,24 @@ def test_strict_two_billion_parameter_ceiling():
     with pytest.raises(ValueError):
         validate_model_manifest({"parameter_count": 2031739904, "sha256": "a" * 64})
     validate_model_manifest({"parameter_count": 1543714304, "sha256": "a" * 64})
+
+
+def test_report_is_readable_tables_not_raw_json(api, cases):
+    client, *_ = api
+    case = client.post('/api/v1/cases', json=cases[0]).json()
+    run = client.post(f'/api/v1/cases/{case["id"]}/analyze').json()
+    report = client.get(f'/api/v1/analyses/{run["id"]}/report').text
+    assert '<pre>' not in report
+    assert '<table' in report
+    assert 'DEMO_SCORE' in report
+
+
+def test_actual_gguf_shape_count(tmp_path):
+    import struct
+    from app.reference.local_model import gguf_parameter_count
+    f = tmp_path / 'tiny.gguf'
+    f.write_bytes(b'GGUF' + struct.pack('<IQQQ', 3, 1, 0, 1) + b'x' + struct.pack('<IQQIQ', 2, 12, 8, 0, 0))
+    assert gguf_parameter_count(f) == 96
+    f.write_bytes(b'junk' + struct.pack('<I', 3))
+    with pytest.raises(ValueError):
+        gguf_parameter_count(f)
