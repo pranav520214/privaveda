@@ -1,4 +1,5 @@
-import Workspace from "@/components/workspace";
+import PrivavedaApp from "@/components/privaveda/privaveda-app";
+
 export default function Page() {
-  return <Workspace />;
+  return <PrivavedaApp />;
 }
