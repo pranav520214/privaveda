@@ -1,0 +1,56 @@
+services:
+  secrets-init:
+    image: alpine:3.23.3
+    command: ["sh", "-c", "if [ ! -s /secrets/db-password ]; then head -c 48 /dev/urandom | base64 > /secrets/db-password; fi; chmod 444 /secrets/db-password"]
+    volumes:
+      - db-secrets:/secrets
+    restart: "no"
+  db:
+    image: postgres:17.9-alpine
+    environment:
+      POSTGRES_USER: pmai
+      POSTGRES_DB: pmai
+      POSTGRES_PASSWORD_FILE: /secrets/db-password
+    volumes:
+      - db-secrets:/secrets:ro
+      - postgres-data:/var/lib/postgresql/data
+    depends_on:
+      secrets-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pmai -d pmai"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+    restart: unless-stopped
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      POSTGRES_PASSWORD_FILE: /secrets/db-password
+      DEMO_CREDENTIALS_PATH: /app/runtime/demo-credentials.txt
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      USE_HF_MODEL: "false"
+    volumes:
+      - db-secrets:/secrets:ro
+      - demo-runtime:/app/runtime
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "${BIND_ADDRESS:-127.0.0.1}:${PORT:-3000}:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+volumes:
+  postgres-data:
+  db-secrets:
+  demo-runtime:

@@ -1,0 +1,205 @@
+[
+  {
+    "name": "DEMO Atlas",
+    "indication": "DEMO-CONTEXT-A",
+    "approved_context": "DEMO-CONTEXT-A",
+    "validation_status": "DEMO_APPROVED",
+    "evidence_status": "DEMO_APPROVED",
+    "evidence_quality": 0.9,
+    "source_reference": "local-demo://fictional-design-fixture-v1",
+    "evidence": [
+      {
+        "reference": "FIXTURE-001",
+        "title": "Fictional DEMO Atlas design fixture — not medical evidence",
+        "source": "local-demo://fictional-design-fixture-v1",
+        "status": "DEMO_APPROVED"
+      }
+    ],
+    "rules": [
+      {
+        "rule_id": "DEMO-HISTORY-01",
+        "kind": "contraindication",
+        "field": "history",
+        "key": "",
+        "operator": "contains",
+        "value": "demo-block-a",
+        "action": "BLOCK",
+        "reason": "Synthetic history flag excludes this fictional option",
+        "source": "local-demo://fictional-design-fixture-v1"
+      }
+    ],
+    "required_observations": [
+      "labs.DEMO-LAB",
+      "organ_function.DEMO-ORGAN"
+    ],
+    "efficacy_demo_score": 0.86,
+    "toxicity_demo_score": 0.32,
+    "interaction_demo_score": 0.18,
+    "uncertainty": 0.16,
+    "last_reviewed": "2026-09-07",
+    "rule_conflict": false,
+    "score_label": "DEMO_SCORE"
+  },
+  {
+    "name": "DEMO Birch",
+    "indication": "DEMO-CONTEXT-A",
+    "approved_context": "DEMO-CONTEXT-A",
+    "validation_status": "DEMO_APPROVED",
+    "evidence_status": "DEMO_APPROVED",
+    "evidence_quality": 0.88,
+    "source_reference": "local-demo://fictional-design-fixture-v1",
+    "evidence": [
+      {
+        "reference": "FIXTURE-002",
+        "title": "Fictional DEMO Birch design fixture — not medical evidence",
+        "source": "local-demo://fictional-design-fixture-v1",
+        "status": "DEMO_APPROVED"
+      }
+    ],
+    "rules": [
+      {
+        "rule_id": "DEMO-INTERACTION-01",
+        "kind": "interaction",
+        "field": "medications",
+        "key": "",
+        "operator": "contains",
+        "value": "DEMO Med-X",
+        "action": "BLOCK",
+        "reason": "Fictional medication pairing is excluded by the demo rule",
+        "source": "local-demo://fictional-design-fixture-v1"
+      }
+    ],
+    "required_observations": [
+      "labs.DEMO-LAB",
+      "organ_function.DEMO-ORGAN"
+    ],
+    "efficacy_demo_score": 0.74,
+    "toxicity_demo_score": 0.16,
+    "interaction_demo_score": 0.1,
+    "uncertainty": 0.12,
+    "last_reviewed": "2026-09-07",
+    "rule_conflict": false,
+    "score_label": "DEMO_SCORE"
+  },
+  {
+    "name": "DEMO Cedar",
+    "indication": "DEMO-CONTEXT-A",
+    "approved_context": "DEMO-CONTEXT-A",
+    "validation_status": "DEMO_APPROVED",
+    "evidence_status": "DEMO_APPROVED",
+    "evidence_quality": 0.76,
+    "source_reference": "local-demo://fictional-design-fixture-v1",
+    "evidence": [
+      {
+        "reference": "FIXTURE-003",
+        "title": "Fictional DEMO Cedar design fixture — not medical evidence",
+        "source": "local-demo://fictional-design-fixture-v1",
+        "status": "DEMO_APPROVED"
+      }
+    ],
+    "rules": [],
+    "required_observations": [
+      "labs.DEMO-LAB",
+      "organ_function.DEMO-ORGAN"
+    ],
+    "efficacy_demo_score": 0.64,
+    "toxicity_demo_score": 0.38,
+    "interaction_demo_score": 0.25,
+    "uncertainty": 0.25,
+    "last_reviewed": "2026-09-07",
+    "rule_conflict": false,
+    "score_label": "DEMO_SCORE"
+  },
+  {
+    "name": "DEMO Delta",
+    "indication": "DEMO-CONTEXT-A",
+    "approved_context": "DEMO-CONTEXT-A",
+    "validation_status": "DEMO_APPROVED",
+    "evidence_status": "DEMO_APPROVED",
+    "evidence_quality": 0.85,
+    "source_reference": "local-demo://fictional-design-fixture-v1",
+    "evidence": [
+      {
+        "reference": "FIXTURE-004",
+        "title": "Fictional DEMO Delta design fixture — not medical evidence",
+        "source": "local-demo://fictional-design-fixture-v1",
+        "status": "DEMO_APPROVED"
+      }
+    ],
+    "rules": [
+      {
+        "rule_id": "DEMO-GENOMIC-01",
+        "kind": "genomic",
+        "field": "genomics",
+        "key": "DEMO-G1",
+        "operator": "equals",
+        "value": "flagged",
+        "action": "BLOCK",
+        "reason": "Synthetic genomic marker excludes this fictional option; no real genetic association",
+        "source": "local-demo://fictional-design-fixture-v1"
+      }
+    ],
+    "required_observations": [
+      "labs.DEMO-LAB",
+      "organ_function.DEMO-ORGAN"
+    ],
+    "efficacy_demo_score": 0.91,
+    "toxicity_demo_score": 0.49,
+    "interaction_demo_score": 0.22,
+    "uncertainty": 0.2,
+    "last_reviewed": "2026-09-07",
+    "rule_conflict": false,
+    "score_label": "DEMO_SCORE"
+  },
+  {
+    "name": "DEMO Elm",
+    "indication": "DEMO-CONTEXT-A",
+    "approved_context": "DEMO-CONTEXT-A",
+    "validation_status": "DEMO_APPROVED",
+    "evidence_status": "DEMO_APPROVED",
+    "evidence_quality": 0.45,
+    "source_reference": "local-demo://fictional-design-fixture-v1",
+    "evidence": [
+      {
+        "reference": "FIXTURE-005",
+        "title": "Fictional DEMO Elm design fixture — not medical evidence",
+        "source": "local-demo://fictional-design-fixture-v1",
+        "status": "DEMO_APPROVED"
+      }
+    ],
+    "rules": [],
+    "required_observations": [
+      "labs.DEMO-LAB",
+      "organ_function.DEMO-ORGAN"
+    ],
+    "efficacy_demo_score": 0.81,
+    "toxicity_demo_score": 0.28,
+    "interaction_demo_score": 0.12,
+    "uncertainty": 0.55,
+    "last_reviewed": "2026-09-07",
+    "rule_conflict": false,
+    "score_label": "DEMO_SCORE"
+  },
+  {
+    "name": "DEMO Flint",
+    "indication": "DEMO-CONTEXT-B",
+    "approved_context": "DEMO-CONTEXT-B",
+    "validation_status": "DEMO_APPROVED",
+    "evidence_status": "MISSING",
+    "evidence_quality": 0.45,
+    "source_reference": "local-demo://fictional-design-fixture-v1",
+    "evidence": [],
+    "rules": [],
+    "required_observations": [
+      "labs.DEMO-LAB",
+      "organ_function.DEMO-ORGAN"
+    ],
+    "efficacy_demo_score": 0.81,
+    "toxicity_demo_score": 0.28,
+    "interaction_demo_score": 0.12,
+    "uncertainty": 0.55,
+    "last_reviewed": "2026-09-07",
+    "rule_conflict": false,
+    "score_label": "DEMO_SCORE"
+  }
+]

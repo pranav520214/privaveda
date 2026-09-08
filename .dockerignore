@@ -1,0 +1,15 @@
+.git
+.venv
+.local
+**/__pycache__
+**/.pytest_cache
+**/node_modules
+**/.next
+**/test-results
+**/*.db
+**/*.db-*
+**/demo-credentials.txt
+.env
+**/.env
+**/.env.*
+docs/screenshots

@@ -1,0 +1,206 @@
+[
+  {
+    "label": "SYN-001",
+    "synthetic": true,
+    "age_band": "40-64",
+    "sex": "unspecified",
+    "condition": "DEMO-CONTEXT-A",
+    "history": [],
+    "medications": [],
+    "allergies": [],
+    "labs": {
+      "DEMO-LAB": 72.0
+    },
+    "genomics": {
+      "DEMO-G1": "unflagged"
+    },
+    "organ_function": {
+      "DEMO-ORGAN": "available"
+    },
+    "notes": "Baseline eligible comparison. SYNTHETIC PATIENT — NOT REAL DATA. Notes are not interpreted by the engine."
+  },
+  {
+    "label": "SYN-002",
+    "synthetic": true,
+    "age_band": "65+",
+    "sex": "unspecified",
+    "condition": "DEMO-CONTEXT-A",
+    "history": [
+      "demo-block-a"
+    ],
+    "medications": [],
+    "allergies": [],
+    "labs": {
+      "DEMO-LAB": 72.0
+    },
+    "genomics": {
+      "DEMO-G1": "unflagged"
+    },
+    "organ_function": {
+      "DEMO-ORGAN": "available"
+    },
+    "notes": "Hard contraindication. SYNTHETIC PATIENT — NOT REAL DATA. Notes are not interpreted by the engine."
+  },
+  {
+    "label": "SYN-003",
+    "synthetic": true,
+    "age_band": "18-39",
+    "sex": "unspecified",
+    "condition": "DEMO-CONTEXT-A",
+    "history": [],
+    "medications": [
+      "DEMO Med-X"
+    ],
+    "allergies": [],
+    "labs": {
+      "DEMO-LAB": 72.0
+    },
+    "genomics": {
+      "DEMO-G1": "unflagged"
+    },
+    "organ_function": {
+      "DEMO-ORGAN": "available"
+    },
+    "notes": "Medication interaction. SYNTHETIC PATIENT — NOT REAL DATA. Notes are not interpreted by the engine."
+  },
+  {
+    "label": "SYN-004",
+    "synthetic": true,
+    "age_band": "40-64",
+    "sex": "unspecified",
+    "condition": "DEMO-CONTEXT-B",
+    "history": [],
+    "medications": [],
+    "allergies": [],
+    "labs": {
+      "DEMO-LAB": 72.0
+    },
+    "genomics": {
+      "DEMO-G1": "unflagged"
+    },
+    "organ_function": {
+      "DEMO-ORGAN": "available"
+    },
+    "notes": "Insufficient evidence. SYNTHETIC PATIENT — NOT REAL DATA. Notes are not interpreted by the engine."
+  },
+  {
+    "label": "SYN-005",
+    "synthetic": true,
+    "age_band": "65+",
+    "sex": "unspecified",
+    "condition": "DEMO-CONTEXT-A",
+    "history": [],
+    "medications": [],
+    "allergies": [],
+    "labs": {},
+    "genomics": {
+      "DEMO-G1": "unflagged"
+    },
+    "organ_function": {
+      "DEMO-ORGAN": "available"
+    },
+    "notes": "Missing required observations. SYNTHETIC PATIENT — NOT REAL DATA. Notes are not interpreted by the engine."
+  },
+  {
+    "label": "SYN-006",
+    "synthetic": true,
+    "age_band": "18-39",
+    "sex": "unspecified",
+    "condition": "DEMO-CONTEXT-A",
+    "history": [],
+    "medications": [],
+    "allergies": [],
+    "labs": {
+      "DEMO-LAB": 72.0
+    },
+    "genomics": {
+      "DEMO-G1": "unflagged"
+    },
+    "organ_function": {
+      "DEMO-ORGAN": "available"
+    },
+    "notes": "Multiple Pareto options. SYNTHETIC PATIENT — NOT REAL DATA. Notes are not interpreted by the engine."
+  },
+  {
+    "label": "SYN-007",
+    "synthetic": true,
+    "age_band": "40-64",
+    "sex": "unspecified",
+    "condition": "DEMO-CONTEXT-A",
+    "history": [],
+    "medications": [],
+    "allergies": [],
+    "labs": {
+      "DEMO-LAB": 72.0
+    },
+    "genomics": {
+      "DEMO-G1": "unflagged"
+    },
+    "organ_function": {
+      "DEMO-ORGAN": "available"
+    },
+    "notes": "Clinician rejection example. SYNTHETIC PATIENT — NOT REAL DATA. Notes are not interpreted by the engine."
+  },
+  {
+    "label": "SYN-008",
+    "synthetic": true,
+    "age_band": "65+",
+    "sex": "unspecified",
+    "condition": "DEMO-CONTEXT-A",
+    "history": [],
+    "medications": [],
+    "allergies": [],
+    "labs": {
+      "DEMO-LAB": 72.0
+    },
+    "genomics": {
+      "DEMO-G1": "unflagged"
+    },
+    "organ_function": {
+      "DEMO-ORGAN": "available"
+    },
+    "notes": "Approved for further review example. SYNTHETIC PATIENT — NOT REAL DATA. Notes are not interpreted by the engine."
+  },
+  {
+    "label": "SYN-009",
+    "synthetic": true,
+    "age_band": "18-39",
+    "sex": "unspecified",
+    "condition": "DEMO-UNSUPPORTED",
+    "history": [],
+    "medications": [],
+    "allergies": [],
+    "labs": {
+      "DEMO-LAB": 72.0
+    },
+    "genomics": {
+      "DEMO-G1": "unflagged"
+    },
+    "organ_function": {
+      "DEMO-ORGAN": "available"
+    },
+    "notes": "Unsupported context. SYNTHETIC PATIENT — NOT REAL DATA. Notes are not interpreted by the engine."
+  },
+  {
+    "label": "SYN-010",
+    "synthetic": true,
+    "age_band": "40-64",
+    "sex": "unspecified",
+    "condition": "DEMO-CONTEXT-A",
+    "history": [],
+    "medications": [],
+    "allergies": [
+      "DEMO Atlas"
+    ],
+    "labs": {
+      "DEMO-LAB": 72.0
+    },
+    "genomics": {
+      "DEMO-G1": "flagged"
+    },
+    "organ_function": {
+      "DEMO-ORGAN": "available"
+    },
+    "notes": "Genomic exclusion and allergy. SYNTHETIC PATIENT — NOT REAL DATA. Notes are not interpreted by the engine."
+  }
+]
