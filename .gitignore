@@ -1,19 +1,65 @@
+# ===== PRIVAVEDA .gitignore =====
+
+# === Environment & secrets ===
 .env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+
+# === Python ===
 .venv/
 __pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
 .pytest_cache/
+.hypothesis/
+.coverage*
+htmlcov/
 *.db
 *.db-*
+
+# === Node / Next.js ===
 node_modules/
 .next/
 *.tsbuildinfo
+
+# === Test artifacts ===
 playwright-report/
 test-results/
+
+# === Local-only data ===
 .local/
-backend/demo-credentials.txt
 .assets/
+backend/demo-credentials.txt
+
+# === Desktop build ===
 desktop/dist/
 desktop/build/
 desktop/*.spec
-.coverage*
-htmlcov/
+
+# === Model weights (NEVER commit large binaries) ===
+*.bin
+*.safetensors
+*.gguf
+*.onnx
+*.pt
+*.pth
+models/medgemma/*.bin
+models/medgemma/*.safetensors
+models/medgemma/*.gguf
+# Keep only the stub manifest
+!models/medgemma/manifest.json
+
+# === IDE / OS ===
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+Thumbs.db
+.DS_Store

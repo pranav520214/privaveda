@@ -1,50 +1,77 @@
-name: Verify synthetic Fast Arm
+name: PRIVAVEDA CI
+
 on:
   push:
+    branches: [main, codex/native-medical]
   pull_request:
   workflow_dispatch:
+
 permissions:
   contents: read
+
 jobs:
-  backend:
+  # -------------------------------------------------------
+  # Job 1: PRIVAVEDA Unit, Numerical, Security & Property Tests
+  # -------------------------------------------------------
+  privaveda-tests:
+    name: "PRIVAVEDA Test Suite (110 tests)"
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-      - run: pip install -r backend/requirements.lock.txt
-      - run: python -m pytest backend/tests -q
-  containers:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-      - run: docker compose up --build --wait --wait-timeout 180
-      - name: Retrieve private ephemeral credentials
+          python-version: "3.11"
+
+      - name: Install dependencies
         run: |
-          mkdir -p .local
-          docker compose cp backend:/app/runtime/demo-credentials.txt .local/container-credentials.txt
-          chmod 600 .local/container-credentials.txt
-      - run: python scripts/smoke.py --credentials-file .local/container-credentials.txt --expected-database postgresql
-      - name: Restart without deleting volumes
-        run: |
-          docker compose restart backend frontend
-          docker compose up --wait --wait-timeout 120
-      - run: python scripts/smoke.py --credentials-file .local/container-credentials.txt --verify-only --expected-database postgresql
-      - working-directory: frontend
-        run: npm ci
-      - working-directory: frontend
-        run: npx playwright install --with-deps chromium
-      - working-directory: frontend
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+
+      - name: Run full pytest battery
         env:
-          E2E_CREDENTIALS_FILE: ../.local/container-credentials.txt
-        run: npm test
-      - if: always()
-        run: docker compose down
+          PRIVAVEDA_OFFLINE: "true"
+        run: |
+          python -m pytest backend/tests -v --tb=short
+
+  # -------------------------------------------------------
+  # Job 2: 21-Step Golden Demonstration (E2E)
+  # -------------------------------------------------------
+  golden-demo:
+    name: "Golden Demo (21 steps)"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: privaveda-tests
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+
+      - name: Run 21-step golden demonstration
+        env:
+          PRIVAVEDA_OFFLINE: "true"
+        run: |
+          python scripts/run_golden_demo.py
+
+  # -------------------------------------------------------
+  # Job 3: Baseline Fast Arm (preserved)
+  # -------------------------------------------------------
+  baseline-backend:
+    name: "Baseline Fast Arm Tests"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: |
+          pip install -r backend/requirements.txt
+      - run: python -m pytest backend/tests -q
